@@ -1,0 +1,82 @@
+/*
+**  Author:     Alex Cholakis (@jkid314159)
+**  File Name:  deep-comparision
+**  Date:       September, 2016
+**
+
+**  Exercise completed for the book ELOQUENT JAVASCRIPT 
+**  CH4/Deep Comparison
+
+**  Write a function that takes two values and returns
+**  true only if they are the same value or are objects 
+**  with the same properties whose values are also equal
+**  when compared with a recursive call to deepEqual.
+**  
+**  Comment:
+**  Originally, I had a number of nested if-else statements,
+**  but realized the return statement did not go back to the
+**  top of the stack but out of the if-else loop to the next
+**  line of code.  Duh on me.
+**  In addition, the recursion works but not able to get back
+**  to the top of the call stack.  
+*/
+
+function deepEqual(obj1, obj2) {
+	var booleanTest = true;
+	var boolean = true;
+	var prop1;
+	var prop2;
+	
+	console.log(obj1);
+	console.log(obj2);
+
+	//Check inputs are null.
+	if ( obj1 == null || obj2 == null ) {
+		return ( obj1 == null ) ? "arg1 = null" : "arg2 = null";
+	}
+	
+	//Check inputs not objects use equality operator
+	if ( typeof obj1 != 'object' || typeof obj2 != 'object' ) {
+		//Input not an object - test equality.
+		boolean = ( obj1 === obj2);
+		console.log("not object " + boolean);
+		return boolean;
+	}
+	
+	//Get propery values
+	prop1 = Object.getOwnPropertyNames(obj1);
+	prop2 = Object.getOwnPropertyNames(obj2);
+	console.log();
+
+	//Check number of properties equal.
+	if ( prop1.length != prop2.length ) { 
+		return false + " - lengths not equal";
+	}
+
+	console.log("1 "+typeof obj1, typeof obj2);
+	booleanTest = typeof obj1 === 'object' && typeof obj2 === 'object';
+	console.log("2 "+ booleanTest);
+
+	//Check has property.
+	for ( var property in obj1 ) {
+		if ( obj2.hasOwnProperty( property ) ) {
+			console.log("property in obj1");
+			console.log(property);
+			console.log();
+			deepEqual(obj1[property], obj2[property]);
+		} else {
+			//Check has property - fail.
+			boolean = false;
+		}
+	}//for-end
+	
+	return boolean;
+	
+}//deepEqual-end
+
+var obj = { here: {is: "an"}, object: 2};
+//{here: {is: "an"}, object: 2}
+//{here: 1, object: 2 }
+//obj, {here: 1, object: 2 }
+deepEqual( obj, { here: {is: "an"}, object: 3} );
+//{here: {is: "an"}, object: 2}
